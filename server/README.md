@@ -1,7 +1,7 @@
 # AiRSS Server - Vercel 部署指南
 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Feasychen%2Fai-rss%2Ftree%2Fmain%2Fserver&env=ADD_KEY,VERCEL_BLOB_STORE_NAME&envDescription=配置运行所需的环境变量&envLink=https://github.com/easychen/ai-rss/tree/main/server%23环境变量说明)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Feasychen%2Fai-rss%2Ftree%2Fmain%2Fserver&env=ADD_KEY,CACHE_MINUTES&envDescription=配置运行所需的环境变量&envLink=https://github.com/easychen/ai-rss/tree/main/server%23环境变量说明)
 - 支持 Vercel Blob 存储
 - 支持 API 密钥认证
 
@@ -10,14 +10,14 @@
 ### 方式一：一键部署
 1. 点击上方的 "Deploy with Vercel" 按钮
 2. 部署过程中需要设置以下环境变量：
-   - `ADD_KEY`: 设置一个安全的 API 访问密钥
-   - `VERCEL_BLOB_STORE_NAME`: Blob 存储名称（**需要先创建**）
-
+   - `ADD_KEY`: 设置一个添加 RSS 的 API 访问密钥
+   - `CACHE_MINUTES`: 设置缓存时间，单位为分钟，不设置则不缓存
+   
 3. 创建 Blob 存储：
    - 部署完成后，进入 Vercel 项目控制台
    - 转到 "Storage" 标签页
    - 点击 "Create Blob Store"
-   - 复制生成的名称，更新到项目的环境变量 `VERCEL_BLOB_STORE_NAME` 中
+   - 回到项目的 storage 标签页，选中刚创建的 Blob 存储，点击 "Connect to Project"
 
 ### 方式二：手动部署
 1. Fork 或克隆仓库
