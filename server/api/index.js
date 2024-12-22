@@ -9,14 +9,16 @@ import { put, list } from '@vercel/blob';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = new Hono()
 const ADD_KEY = process.env.ADD_KEY
 
 // 修改环境变量检查
 const isVercel = process.env.VERCEL === '1';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // 添加 CORS 中间件
 app.use('/*', cors({

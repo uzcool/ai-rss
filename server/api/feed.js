@@ -5,6 +5,12 @@ import fetch from 'node-fetch'
 import * as cheerio from 'cheerio'
 import puppeteer from 'puppeteer'
 import { head, put } from '@vercel/blob';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // 修改环境变量检查
 const isVercel = process.env.VERCEL === '1';
@@ -50,32 +56,40 @@ async function getPageHtml(sdd) {
 
 // 缓存工具函数
 async function getCacheKey(name) {
-  return `cache_${name}_feed.xml`;
+  return {
+    content: `cache_${name}_feed.xml`,
+    metadata: `cache_${name}_metadata.json`
+  };
 }
 
 async function getCache(name) {
   const cacheKey = await getCacheKey(name);
   try {
     if (isVercel) {
-      // Vercel Blob 存储
-      const metadata = await head(cacheKey, {
-        token: process.env.BLOB_READ_WRITE_TOKEN,
-      });
+      // 检查内容和元数据是否存在
+      const [contentMeta, metadataMeta] = await Promise.all([
+        head(cacheKey.content, { token: process.env.BLOB_READ_WRITE_TOKEN }),
+        head(cacheKey.metadata, { token: process.env.BLOB_READ_WRITE_TOKEN })
+      ]);
       
-      if (!metadata) return null;
+      if (!contentMeta || !metadataMeta) return null;
+      
+      // 获取元数据文件
+      const metadataResponse = await fetch(metadataMeta.downloadUrl);
+      const metadata = await metadataResponse.json();
       
       // 检查缓存是否过期
-      const cacheAge = Date.now() - new Date(metadata.uploadedAt).getTime();
+      const cacheAge = Date.now() - metadata.timestamp;
       const cacheMinutes = parseInt(process.env.CACHE_MINUTES || '0');
       
       if (cacheMinutes > 0 && cacheAge < cacheMinutes * 60 * 1000) {
-        const response = await fetch(metadata.downloadUrl);
+        const response = await fetch(contentMeta.downloadUrl);
         return await response.text();
       }
     } else {
       // 本地文件系统缓存
-      const cacheDir = path.join(process.cwd(), 'cache');
-      const cachePath = path.join(cacheDir, cacheKey);
+      const cacheDir = path.join(__dirname, 'cache');
+      const cachePath = path.join(cacheDir, cacheKey.content);
       
       try {
         const stats = await fs.stat(cachePath);
@@ -101,18 +115,28 @@ async function setCache(name, content) {
   const cacheKey = await getCacheKey(name);
   try {
     if (isVercel) {
-      // Vercel Blob 存储
-      await put(cacheKey, content, {
-        access: 'public',
-        token: process.env.BLOB_READ_WRITE_TOKEN,
-        contentType: 'application/xml',
-        addRandomSuffix: false
-      });
+      // 并行写入内容和元数据
+      await Promise.all([
+        put(cacheKey.content, content, {
+          access: 'public',
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+          contentType: 'application/xml',
+          addRandomSuffix: false
+        }),
+        put(cacheKey.metadata, JSON.stringify({
+          timestamp: Date.now()
+        }), {
+          access: 'public',
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+          contentType: 'application/json',
+          addRandomSuffix: false
+        })
+      ]);
     } else {
       // 本地文件系统缓存
-      const cacheDir = path.join(process.cwd(), 'cache');
+      const cacheDir = path.join(__dirname, 'cache');
       await fs.mkdir(cacheDir, { recursive: true });
-      await fs.writeFile(path.join(cacheDir, cacheKey), content);
+      await fs.writeFile(path.join(cacheDir, cacheKey.content), content);
     }
   } catch (error) {
     console.error('Cache write error:', error);
@@ -137,7 +161,7 @@ export async function getFeed(name) {
     sdd = JSON.parse(sddContent);
   } else {
     // 读取 SDD 文件
-    const sddPath = path.join(process.cwd(), 'sdd', `${name}.sdd.json`)
+    const sddPath = path.join(__dirname, 'sdd', `${name}.sdd.json`)
     const sddContent = await fs.readFile(sddPath, 'utf-8')
     sdd = JSON.parse(sddContent);
   }
