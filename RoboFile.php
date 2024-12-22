@@ -22,17 +22,8 @@ class RoboFile extends \Robo\Tasks
      * @param string $username Docker Hub用户名
      * @param string $tag 镜像标签，默认为latest
      */
-    public function dockerPub($username, $tag = 'latest')
+    public function dockerPub($username='easychen', $tag = 'latest')
     {
-        // 给镜像打标签
-        $this->taskExec('docker tag')
-            ->arg("ai-rss:{$tag}")
-            ->arg("{$username}/ai-rss:{$tag}")
-            ->run();
-
-        // 推送到Docker Hub
-        $this->taskExec('docker push')
-            ->arg("{$username}/ai-rss:{$tag}")
-            ->run();
+        $this->_exec("cd server && docker build -t ai-rss:{$tag} . && docker tag ai-rss:{$tag} {$username}/ai-rss:{$tag} && docker push {$username}/ai-rss:{$tag}");
     }
 }
