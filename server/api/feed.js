@@ -6,6 +6,9 @@ import * as cheerio from 'cheerio'
 import puppeteer from 'puppeteer'
 import { head, put } from '@vercel/blob';
 
+// 修改环境变量检查
+const isVercel = process.env.VERCEL === '1';
+
 // hello
 async function getPageHtml(sdd) {
   if (sdd.suggest_fetch_method === 'headless') {
@@ -53,10 +56,9 @@ async function getCacheKey(name) {
 async function getCache(name) {
   const cacheKey = await getCacheKey(name);
   try {
-    if (process.env.VERCEL_BLOB_STORE_NAME) {
+    if (isVercel) {
       // Vercel Blob 存储
       const metadata = await head(cacheKey, {
-        store: process.env.VERCEL_BLOB_STORE_NAME,
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
       
@@ -98,13 +100,12 @@ async function getCache(name) {
 async function setCache(name, content) {
   const cacheKey = await getCacheKey(name);
   try {
-    if (process.env.VERCEL_BLOB_STORE_NAME) {
+    if (isVercel) {
       // Vercel Blob 存储
       await put(cacheKey, content, {
         access: 'public',
         token: process.env.BLOB_READ_WRITE_TOKEN,
         contentType: 'application/xml',
-        store: process.env.VERCEL_BLOB_STORE_NAME,
         addRandomSuffix: false
       });
     } else {
@@ -127,9 +128,8 @@ export async function getFeed(name) {
 
   let sdd;
 
-  if (process.env.VERCEL_BLOB_STORE_NAME) {
+  if (isVercel) {
     const metadata = await head(`${name}.sdd.json`, {
-      store: process.env.VERCEL_BLOB_STORE_NAME,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     })
     console.log("metadata", metadata);

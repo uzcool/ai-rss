@@ -13,7 +13,7 @@ const app = new Hono()
 const ADD_KEY = process.env.ADD_KEY
 
 // 修改环境变量检查
-const isVercel = !!process.env.VERCEL_BLOB_STORE_NAME;
+const isVercel = process.env.VERCEL === '1';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,7 +85,6 @@ app.post('/add-sdd', async (c) => {
         access: 'public',
         token: process.env.BLOB_READ_WRITE_TOKEN,
         contentType: 'application/json',
-        store: process.env.VERCEL_BLOB_STORE_NAME,  // 指定存储名称
         addRandomSuffix: false
       });
     } else {
@@ -149,7 +148,6 @@ app.get('/list', async (c) => {
       // 使用 Vercel Blob 列表，添加 token 和 store 配置
       const { blobs } = await list({
         token: process.env.BLOB_READ_WRITE_TOKEN,
-        store: process.env.VERCEL_BLOB_STORE_NAME  // 指定存储名称
       });
       
       items = await Promise.all(blobs
