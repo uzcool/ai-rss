@@ -42,7 +42,10 @@ AI RSS 是一个通过 AI 将网页内容转换为 RSS 订阅源的工具。
    - 点击 "Create Blob Store"
    - 在项目的 storage 标签页选择新创建的 Blob 存储，点击 "Connect to Project"
 
-PS: 如果连接 storage 以后，首页依然是 "blob_storage_configured": false，请到 vercel 控制台中 redeploy 一次以使其强制生效 
+注意：
+
+1. 如果连接 storage 以后，首页依然是 "blob_storage_configured": false，请到 vercel 控制台中 redeploy 一次以使其强制生效 
+2. vercel 默认提供的 *.vercel.app 二级域名在中国大陆网络可能无法访问，可绑定自己的域名后使用
 
 ### Docker 部署
 
