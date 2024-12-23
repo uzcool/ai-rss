@@ -8,6 +8,7 @@ import { cors } from 'hono/cors'
 import { put, list } from '@vercel/blob';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import pkg from '../package.json' assert { type: 'json' };
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,19 +55,44 @@ app.get('/rss/:name', async (c) => {
 })
 
 app.get('/', async (c) => {
-  return c.text('Hello World')
+  const status = {
+    app_name: 'ai-rss-server',
+    version: pkg.version,
+    add_key_configured: !!ADD_KEY,
+    is_vercel: isVercel,
+    blob_storage_configured: !!process.env.BLOB_READ_WRITE_TOKEN,
+    cache_minutes: process.env.CACHE_MINUTES,
+  }
+  return c.json(status)
 })
 
-// 新增POST接口用于接收SDD
-app.post('/add-sdd', async (c) => {
-  // 检查ADD_KEY是否存在且匹配
+// 统一的身份验证函数
+function validateAuth(c) {
   if (!ADD_KEY) {
-    return c.json({ error: 'ADD_KEY not configured' }, 403)
+    return false;
   }
 
-  const authKey = c.req.header('X-Add-Key')
-  if (authKey !== ADD_KEY) {
-    return c.json({ error: 'Invalid ADD_KEY' }, 403)
+  // 尝试从 header 获取
+  const headerKey = c.req.header('X-Add-Key');
+  if (headerKey === ADD_KEY) {
+    return true;
+  }
+
+  // 尝试从 query 获取
+  const queryKey = c.req.query('key');
+  if (queryKey === ADD_KEY) {
+    return true;
+  }
+
+  return false;
+}
+
+// 修改 add-sdd 接口使用新的验证函数
+app.post('/add-sdd', async (c) => {
+  if (!validateAuth(c)) {
+    return c.json({ 
+      error: 'Invalid or missing ADD_KEY. Please provide key via X-Add-Key header or ?key=xxx query parameter' 
+    }, 403);
   }
 
   try {
@@ -110,30 +136,9 @@ app.post('/add-sdd', async (c) => {
   }
 })
 
-// 辅助函数：验证 ADD_KEY
-function validateAddKey(c) {
-  if (!ADD_KEY) {
-    return false;
-  }
-
-  // 尝试从 header 获取
-  const headerKey = c.req.header('X-Add-Key');
-  if (headerKey === ADD_KEY) {
-    return true;
-  }
-
-  // 尝试从 query 获取
-  const queryKey = c.req.query('key');
-  if (queryKey === ADD_KEY) {
-    return true;
-  }
-
-  return false;
-}
-
+// list 接口已经在使用 validateAuth，将其改名为 validateAuth
 app.get('/list', async (c) => {
-  // 使用新的验证函数
-  if (!validateAddKey(c)) {
+  if (!validateAuth(c)) {
     return c.json({ 
       error: 'Invalid or missing ADD_KEY. Please provide key via X-Add-Key header or ?key=xxx query parameter' 
     }, 403);

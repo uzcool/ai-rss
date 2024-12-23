@@ -143,6 +143,13 @@ async function setCache(name, content) {
   }
 }
 
+// URL处理工具函数
+function normalizeUrl(url, baseUrl) {
+  if (!url) return url;
+  if (url.startsWith('http')) return url;
+  return `${baseUrl.protocol}//${url.replace(/^\/+/, '')}`;
+}
+
 export async function getFeed(name) {
   // 检查缓存
   const cachedContent = await getCache(name);
@@ -255,15 +262,17 @@ export async function getFeed(name) {
 
   // 添加到 Feed
   feedItems.forEach(item => {
+    const baseUrl = new URL(sdd.url);
+    
     feed.addItem({
       title: item[sdd.rss.items.title],
-      id: item[sdd.rss.items.guid] || item[sdd.rss.items.link],
-      link: item[sdd.rss.items.link],
+      id: item[sdd.rss.items.guid] || normalizeUrl(item[sdd.rss.items.link], baseUrl),
+      link: normalizeUrl(item[sdd.rss.items.link], baseUrl),
       description: item[sdd.rss.items.description],
       date: item[sdd.rss.items.date] ? new Date(item[sdd.rss.items.date]) : new Date(),
       ...(sdd.rss.items.cover && item[sdd.rss.items.cover] && {
         enclosure: {
-          url: item[sdd.rss.items.cover],
+          url: normalizeUrl(item[sdd.rss.items.cover], baseUrl),
           type: 'image/jpeg'
         }
       })
