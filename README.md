@@ -58,7 +58,7 @@ cd ai-rss-server
 2. 下载 Docker Compose 文件：
 
 ```bash
-wget https://raw.githubusercontent.com/easychen/ai-rss/main/server/docker-compose.yml
+wget https://raw.githubusercontent.com/easychen/ai-rss/master/server/docker-compose.yml
 ```
 
 3. 创建一个 `.env` 文件，并添加以下环境变量：
