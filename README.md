@@ -29,7 +29,7 @@ AI RSS 是一个通过 AI 将网页内容转换为 RSS 订阅源的工具。
 
 ### Vercel 部署
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Feasychen%2Fai-rss%2Ftree%2Fmain%2Fserver&env=ADD_KEY,CACHE_MINUTES&envDescription=配置运行所需的环境变量&envLink=https://github.com/easychen/ai-rss)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Feasychen%2Fai-rss%2Ftree%2Fmaster%2Fserver&env=ADD_KEY,CACHE_MINUTES&envDescription=配置运行所需的环境变量&envLink=https://github.com/easychen/ai-rss/tree/master/server%23服务器)
 
 1. 点击上方的 "Deploy with Vercel" 按钮
 2. 部署时需要设置以下环境变量：
