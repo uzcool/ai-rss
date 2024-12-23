@@ -8,10 +8,9 @@ import { cors } from 'hono/cors'
 import { put, list, del } from '@vercel/blob';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import pkg from '../package.json' assert { type: 'json' };
 import { Feed } from 'feed';
 
-
+const THE_VERSION = '1.0.1'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -63,7 +62,7 @@ app.get('/rss/:name', async (c) => {
 app.get('/', async (c) => {
   const status = {
     app_name: 'ai-rss-server',
-    version: pkg.version,
+    version: THE_VERSION,
     add_key_configured: !!ADD_KEY,
     is_vercel: isVercel,
     blob_storage_configured: !!process.env.BLOB_READ_WRITE_TOKEN,
