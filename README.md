@@ -11,13 +11,16 @@ AI RSS 是一个通过 AI 将网页内容转换为 RSS 订阅源的工具。
 
 ## 浏览器插件
 
-### 预备
+### 准备工作
 
-由于我们使用了AI的能力来分析网页内容，所以需要先注册一个 OpenAI/API2D/SillconFlow 的账号，并获取一个 API Key。
+由于我们使用了AI的能力来分析网页内容，所以需要先注册一个 [OpenAI](https://platform.openai.com)/[API2D](https://api2d.com/r/186008)/[SillconFlow](https://cloud.siliconflow.cn/i/GKAoff2O) 的账号，并获取一个 API Key。
 
 ### 安装
 
-插件市场地址
+支持 Chrome 和 Edge 浏览器。
+
+1. 插件商店上架中，敬请期待。
+2. 下载[插件包](ext/ai-rss.zip)，解压后，在浏览器中打开 `chrome://extensions/` 页面，点击 "加载已解压的扩展程序"，选择解压后的文件夹。
 
 
 ## 服务器
