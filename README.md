@@ -101,6 +101,10 @@ docker pull easychen/ai-rss-server:latest
 docker run -d --name ai-rss-server -e ADD_KEY=your_api_key -e CACHE_MINUTES=5 easychen/ai-rss-server:latest
 ```
 
+注意：
+
+1. 由于浏览器插件是注入到网页中执行的，因此，受浏览器限制，使用HTTPS的网站只能往HTTPS下的服务器端发送信息，你需要为服务器端配置SSL证书
+
 ## API 说明
 
 主要接口：
