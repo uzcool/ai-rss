@@ -2,6 +2,13 @@
 
 AI RSS 是一个通过 AI 将网页内容转换为 RSS 订阅源的工具。
 
+
+
+https://github.com/user-attachments/assets/5c5f7fc2-ccec-47d8-90b0-6ee323aca237
+
+
+[完整使用教程请移步B站](https://www.bilibili.com/video/BV1GJkdYdE9i)
+
 它包含两部分：
 
 1. 一个浏览器插件，可以选择网页中的列表，并指定每一个数据项，最后生成一个 SDD（结构化数据描述） 文件
