@@ -267,7 +267,7 @@ export async function getFeed(name) {
     feed.addItem({
       title: item[sdd.rss.items.title],
       id: item[sdd.rss.items.guid] || normalizeUrl(item[sdd.rss.items.link], baseUrl),
-      link: normalizeUrl(item[sdd.rss.items.link], baseUrl),
+      link: encodeURIComponent(normalizeUrl(item[sdd.rss.items.link], baseUrl)),
       description: item[sdd.rss.items.description],
       date: item[sdd.rss.items.date] ? new Date(item[sdd.rss.items.date]) : new Date(),
       ...(sdd.rss.items.cover && item[sdd.rss.items.cover] && {
