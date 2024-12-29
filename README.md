@@ -30,7 +30,7 @@ https://github.com/user-attachments/assets/5c5f7fc2-ccec-47d8-90b0-6ee323aca237
 
 支持 Chrome 和 Edge 浏览器。
 
-1. 插件商店上架中，敬请期待。
+1. 插件商店：[Chrome商店](https://chromewebstore.google.com/detail/airss/hhconojkeohomnfbpbioamldompinckh?authuser=0&hl=en&pli=1) | [Edge商店](https://microsoftedge.microsoft.com/addons/detail/airss/kgbiogeimnehnobgjpbebphdgmflijgl)
 2. 在Releases页面下载插件包，解压后，在浏览器中打开 `chrome://extensions/` 页面，点击 "加载已解压的扩展程序"，选择解压后的文件夹。
 
 
